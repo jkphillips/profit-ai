@@ -5,7 +5,7 @@
 try {
     require('dotenv').config();
 } catch (err) {
-    console.log(ℹ️  Using Railway environment variables');
+    console.log('INFO:  Using Railway environment variables');
 }
 const express = require('express');
 const cors = require('cors');
