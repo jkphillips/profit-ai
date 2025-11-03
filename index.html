@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Profit AI - Automated Trading</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #0052FF;
+            --light-blue: #1652F0;
+            --dark-blue: #0041CC;
+            --bg-light: #FFFFFF;
+            --bg-gray: #F5F7F8;
+            --text-dark: #0A0B0D;
+            --text-gray: #5B636E;
+            --border-color: #E0E3E5;
+            --success-green: #05B169;
+            --error-red: #DF5F67;
+            --warning-orange: #F5A623;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body.dark-mode {
+            --bg-light: #0A0B0D;
+            --bg-gray: #1A1B1F;
+            --text-dark: #FFFFFF;
+            --text-gray: #B1B5C3;
+            --border-color: #2C2D31;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Landing Page */
+        .landing {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #0052FF 0%, #1652F0 100%);
+        }
+
+        .logo-container {
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-text {
+            font-size: 42px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0052FF, #1652F0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .landing h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .landing p {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary-blue);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            margin-left: 16px;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--primary-blue);
+        }
+
+        /* Login/Signup Page */
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: var(--bg-light);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-card h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .auth-card p {
+            color: var(--text-gray);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 16px;
+            margin-top: 10px;
+        }
+
+        .link {
+            color: var(--primary-blue);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        /* Dashboard */
+        .dashboard-header {
+            background: var(--primary-blue);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+
+        .balance-display {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .balance-amount {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .balance-change {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+        }
+
+        .balance-change.positive {
+            color: var(--success-green);
+        }
+
+        .balance-change.negative {
+            color: var(--error-red);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .stat-value.success {
+            color: var(--success-green);
+        }
+
+        .stat-value.error {
+            color: var(--error-red);
+        }
+
+        /* Status Card */
+        .status-card {
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--success-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-indicator.waiting {
+            background: var(--warning-orange);
+        }
+
+        .status-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .status-details {
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        /* Trade History */
+        .trade-item {
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 12px;
+        }
+
+        .trade-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .trade-type {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .trade-type.long {
+            background: rgba(5, 177, 105, 0.1);
+            color: var(--success-green);
+        }
+
+        .trade-type.short {
+            background: rgba(223, 95, 103, 0.1);
+            color: var(--error-red);
+        }
+
+        .trade-profit {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .trade-profit.positive {
+            color: var(--success-green);
+        }
+
+        .trade-profit.negative {
+            color: var(--error-red);
+        }
+
+        .trade-details {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-light);
+            border-top: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 8px 16px;
+            color: var(--text-gray);
+            transition: color 0.3s ease;
+        }
+
+        .nav-item.active {
+            color: var(--primary-blue);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-label {
+            font-size: 12px;
+        }
+
+        /* Chart Placeholder */
+        .chart-container {
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-placeholder {
+            text-align: center;
+            color: var(--text-gray);
+        }
+
+        /* Settings */
+        .settings-section {
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .settings-section h3 {
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-color);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-blue);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .main-content {
+            padding-bottom: 80px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .landing h1 {
+                font-size: 36px;
+            }
+
+            .landing p {
+                font-size: 16px;
+            }
+
+            .btn-secondary {
+                margin-left: 0;
+                margin-top: 12px;
+            }
+
+            .balance-amount {
+                font-size: 36px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            z-index: 2000;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        .notification.success {
+            border-color: var(--success-green);
+        }
+
+        .notification.error {
+            border-color: var(--error-red);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Landing Page -->
+    <div id="landing" class="page active">
+        <div class="landing">
+            <div class="logo-container">
+                <div class="logo">
+                    <div class="logo-text">P</div>
+                </div>
+            </div>
+            <h1>Profit AI</h1>
+            <p>Automated crypto trading powered by advanced algorithms. Trade 24/7 while you sleep.</p>
+            <div>
+                <button class="btn btn-primary" onclick="showPage('login')">Get Started</button>
+                <button class="btn btn-secondary" onclick="showPage('signup')">Create Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="login" class="page">
+        <div class="auth-page">
+            <div class="auth-card">
+                <h2>Welcome Back</h2>
+                <p>Log in to your Profit AI account</p>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Log In</button>
+                </form>
+                <p style="text-align: center; margin-top: 20px;">
+                    Don't have an account? <span class="link" onclick="showPage('signup')">Sign up</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Page -->
+    <div id="signup" class="page">
+        <div class="auth-page">
+            <div class="auth-card">
+                <h2>Create Account</h2>
+                <p>Start trading with Profit AI today</p>
+                <form onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="signupEmail" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="signupPassword" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+                </form>
+                <p style="text-align: center; margin-top: 20px;">
+                    Already have an account? <span class="link" onclick="showPage('login')">Log in</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Setup Page -->
+    <div id="api-setup" class="page">
+        <div class="auth-page">
+            <div class="auth-card">
+                <h2>Connect Exchange</h2>
+                <p>Link your exchange to start trading</p>
+                <form onsubmit="handleApiSetup(event)">
+                    <div class="form-group">
+                        <label>Exchange</label>
+                        <select id="exchange" required>
+                            <option value="">Select Exchange</option>
+                            <option value="binance">Binance</option>
+                            <option value="asterdex">Aster Dex</option>
+                            <option value="coinbase">Coinbase</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>API Key</label>
+                        <input type="text" id="apiKey" placeholder="Enter your API key" required>
+                    </div>
+                    <div class="form-group">
+                        <label>API Secret</label>
+                        <input type="password" id="apiSecret" placeholder="Enter your API secret" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Connect & Start Trading</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboard" class="page">
+        <div class="container main-content">
+            <div class="dashboard-header">
+                <div class="balance-display">Account Balance</div>
+                <div class="balance-amount" id="accountBalance">$0.00</div>
+                <div class="balance-change positive" id="balanceChange">
+                    <span>↗</span>
+                    <span id="changeAmount">+$0.00 (0.0%)</span>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Win Rate</div>
+                    <div class="stat-value success" id="winRate">0%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Today's P&L</div>
+                    <div class="stat-value" id="todayPL">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Trades</div>
+                    <div class="stat-value" id="totalTrades">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">YTD P&L</div>
+                    <div class="stat-value" id="ytdPL">$0.00</div>
+                </div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-header">
+                    <div class="status-indicator" id="statusIndicator"></div>
+                    <div class="status-text" id="statusText">Analyzing Market</div>
+                </div>
+                <div class="status-details" id="statusDetails">
+                    Profit AI algorithm is actively monitoring market conditions. You'll be notified when trades are executed.
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-placeholder">
+                    <h3>Performance Chart</h3>
+                    <p>Your account growth over time</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trade History Page -->
+    <div id="history" class="page">
+        <div class="container main-content">
+            <h2 style="margin-bottom: 24px;">Trade History</h2>
+            <div id="tradeHistoryContainer">
+                <!-- Trade items will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Page -->
+    <div id="settings" class="page">
+        <div class="container main-content">
+            <h2 style="margin-bottom: 24px;">Settings</h2>
+            
+            <div class="settings-section">
+                <h3>Appearance</h3>
+                <div class="setting-item">
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;">Dark Mode</div>
+                        <div style="font-size: 14px; color: var(--text-gray);">Toggle dark theme</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Trading Settings</h3>
+                <div class="setting-item">
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;">Position Size</div>
+                        <div style="font-size: 14px; color: var(--text-gray);">Percentage of balance per trade</div>
+                    </div>
+                    <select style="padding: 8px; border-radius: 6px; border: 2px solid var(--border-color);">
+                        <option value="100">100%</option>
+                        <option value="75">75%</option>
+                        <option value="50">50%</option>
+                        <option value="25">25%</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;">Leverage</div>
+                        <div style="font-size: 14px; color: var(--text-gray);">Trading leverage multiplier</div>
+                    </div>
+                    <select style="padding: 8px; border-radius: 6px; border: 2px solid var(--border-color);">
+                        <option value="1">1x</option>
+                        <option value="2">2x</option>
+                        <option value="5">5x</option>
+                        <option value="10" selected>10x</option>
+                        <option value="20">20x</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Account</h3>
+                <div class="setting-item">
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;">Connected Exchange</div>
+                        <div style="font-size: 14px; color: var(--text-gray);" id="connectedExchange">Not connected</div>
+                    </div>
+                    <button class="btn btn-primary" style="padding: 8px 16px; font-size: 14px;" onclick="showPage('api-setup')">Change</button>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary btn-full" style="margin-top: 24px; background: var(--error-red); color: white; border: none;" onclick="handleLogout()">
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <!-- ROI Calculator Page -->
+    <div id="calculator" class="page">
+        <div class="container main-content">
+            <h2 style="margin-bottom: 24px;">ROI Calculator</h2>
+            
+            <div class="settings-section">
+                <h3>Calculate Your Potential</h3>
+                <div class="form-group">
+                    <label>Starting Balance ($)</label>
+                    <input type="number" id="roiStartBalance" placeholder="5000" value="5000">
+                </div>
+                <div class="form-group">
+                    <label>Expected Win Rate (%)</label>
+                    <input type="number" id="roiWinRate" placeholder="68" value="68" min="0" max="100">
+                </div>
+                <div class="form-group">
+                    <label>Average Profit Per Trade (%)</label>
+                    <input type="number" id="roiAvgProfit" placeholder="1.0" value="1.0" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label>Trades Per Day</label>
+                    <input type="number" id="roiTradesPerDay" placeholder="3" value="3" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Time Period (Days)</label>
+                    <input type="number" id="roiDays" placeholder="30" value="30" min="1">
+                </div>
+                <button class="btn btn-primary btn-full" onclick="calculateROI()">Calculate</button>
+            </div>
+
+            <div class="settings-section" id="roiResults" style="display: none;">
+                <h3>Projected Results</h3>
+                <div style="text-align: center; padding: 20px;">
+                    <div style="font-size: 48px; font-weight: 800; color: var(--success-green); margin-bottom: 16px;" id="roiEndBalance">$0</div>
+                    <div style="font-size: 18px; color: var(--text-gray); margin-bottom: 8px;">
+                        Total Profit: <span style="color: var(--success-green); font-weight: 600;" id="roiTotalProfit">$0</span>
+                    </div>
+                    <div style="font-size: 18px; color: var(--text-gray);">
+                        ROI: <span style="color: var(--success-green); font-weight: 600;" id="roiPercentage">0%</span>
+                    </div>
+                </div>
+                <div style="padding: 16px; background: var(--bg-gray); border-radius: 8px; font-size: 14px; color: var(--text-gray);">
+                    ⚠️ This is a projection based on historical performance and does not guarantee future results. Past performance is not indicative of future returns.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="nav">
+        <div class="nav-item active" onclick="switchTab('dashboard')">
+            <div class="nav-icon">📊</div>
+            <div class="nav-label">Dashboard</div>
+        </div>
+        <div class="nav-item" onclick="switchTab('history')">
+            <div class="nav-icon">📜</div>
+            <div class="nav-label">History</div>
+        </div>
+        <div class="nav-item" onclick="switchTab('calculator')">
+            <div class="nav-icon">🧮</div>
+            <div class="nav-label">Calculator</div>
+        </div>
+        <div class="nav-item" onclick="switchTab('settings')">
+            <div class="nav-icon">⚙️</div>
+            <div class="nav-label">Settings</div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <div id="notificationText"></div>
+    </div>
+
+    <script>
+        // App State
+        let appState = {
+            balance: 5000,
+            trades: [],
+            isLoggedIn: false,
+            exchange: null
+        };
+
+        // Page Navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // Tab Navigation
+        function switchTab(tabName) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            showPage(tabName);
+        }
+
+        // Authentication
+        function handleLogin(event) {
+            event.preventDefault();
+            // In production, this would connect to your backend
+            appState.isLoggedIn = true;
+            showNotification('Login successful!', 'success');
+            showPage('api-setup');
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            // In production, this would connect to your backend
+            appState.isLoggedIn = true;
+            showNotification('Account created successfully!', 'success');
+            showPage('api-setup');
+        }
+
+        function handleApiSetup(event) {
+            event.preventDefault();
+            const exchange = document.getElementById('exchange').value;
+            appState.exchange = exchange;
+            document.getElementById('connectedExchange').textContent = exchange.charAt(0).toUpperCase() + exchange.slice(1);
+            showNotification('Exchange connected! Starting trading bot...', 'success');
+            showPage('dashboard');
+            startTradingSimulation();
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to log out?')) {
+                appState.isLoggedIn = false;
+                appState.exchange = null;
+                showPage('landing');
+                showNotification('Logged out successfully', 'success');
+            }
+        }
+
+        // Dark Mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        // Load dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('darkModeToggle').checked = true;
+        }
+
+        // Notifications
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationText.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            const balance = appState.balance;
+            const todayTrades = appState.trades.filter(t => {
+                const today = new Date().toDateString();
+                return new Date(t.timestamp).toDateString() === today;
+            });
+
+            const todayPL = todayTrades.reduce((sum, t) => sum + t.profit, 0);
+            const ytdPL = appState.trades.reduce((sum, t) => sum + t.profit, 0);
+            const winningTrades = appState.trades.filter(t => t.profit > 0).length;
+            const winRate = appState.trades.length > 0 
+                ? ((winningTrades / appState.trades.length) * 100).toFixed(0)
+                : 0;
+
+            document.getElementById('accountBalance').textContent = `$${balance.toFixed(2)}`;
+            document.getElementById('winRate').textContent = `${winRate}%`;
+            document.getElementById('todayPL').textContent = `$${todayPL.toFixed(2)}`;
+            document.getElementById('todayPL').className = todayPL >= 0 ? 'stat-value success' : 'stat-value error';
+            document.getElementById('totalTrades').textContent = appState.trades.length;
+            document.getElementById('ytdPL').textContent = `$${ytdPL.toFixed(2)}`;
+            document.getElementById('ytdPL').className = ytdPL >= 0 ? 'stat-value success' : 'stat-value error';
+
+            // Update change amount
+            const changePercent = ytdPL > 0 ? ((ytdPL / (balance - ytdPL)) * 100).toFixed(1) : 0;
+            document.getElementById('changeAmount').textContent = 
+                `${ytdPL >= 0 ? '+' : ''}$${ytdPL.toFixed(2)} (${changePercent}%)`;
+        }
+
+        // Update Trade History
+        function updateTradeHistory() {
+            const container = document.getElementById('tradeHistoryContainer');
+            
+            if (appState.trades.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-gray);">
+                        <h3>No trades yet</h3>
+                        <p>Trades will appear here once the algorithm detects opportunities</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = appState.trades.slice().reverse().map(trade => {
+                const profitClass = trade.profit >= 0 ? 'positive' : 'negative';
+                const typeClass = trade.type.toLowerCase();
+                const profitPercent = ((trade.profit / trade.entryPrice) * 100).toFixed(2);
+                
+                return `
+                    <div class="trade-item">
+                        <div class="trade-header">
+                            <span class="trade-type ${typeClass}">${trade.type}</span>
+                            <span class="trade-profit ${profitClass}">
+                                ${trade.profit >= 0 ? '+' : ''}$${trade.profit.toFixed(2)} (${profitPercent}%)
+                            </span>
+                        </div>
+                        <div class="trade-details">
+                            <div>
+                                <div style="font-size: 12px; color: var(--text-gray); margin-bottom: 4px;">Entry → Exit</div>
+                                <div>$${trade.entryPrice.toFixed(2)} → $${trade.exitPrice.toFixed(2)}</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 12px; color: var(--text-gray); margin-bottom: 4px;">Time</div>
+                                <div>${new Date(trade.timestamp).toLocaleString()}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Trading Simulation
+        function startTradingSimulation() {
+            // Simulate trades every 30-60 seconds for demo
+            setInterval(() => {
+                if (Math.random() > 0.7) { // 30% chance of trade
+                    executeDemoTrade();
+                }
+            }, 45000); // Check every 45 seconds
+
+            // Update status randomly
+            setInterval(() => {
+                updateTradingStatus();
+            }, 15000);
+
+            // Initial status update
+            updateTradingStatus();
+        }
+
+        function executeDemoTrade() {
+            const type = Math.random() > 0.5 ? 'LONG' : 'SHORT';
+            const entryPrice = 28000 + (Math.random() * 2000);
+            const isWin = Math.random() > 0.32; // 68% win rate
+            
+            let exitPrice, profit;
+            if (isWin) {
+                const profitPercent = 0.5 + (Math.random() * 1.5); // 0.5% to 2% profit
+                exitPrice = type === 'LONG' 
+                    ? entryPrice * (1 + profitPercent / 100)
+                    : entryPrice * (1 - profitPercent / 100);
+                profit = Math.abs(exitPrice - entryPrice);
+            } else {
+                const lossPercent = 0.5 + (Math.random() * 1); // 0.5% to 1.5% loss
+                exitPrice = type === 'LONG'
+                    ? entryPrice * (1 - lossPercent / 100)
+                    : entryPrice * (1 + lossPercent / 100);
+                profit = -Math.abs(exitPrice - entryPrice);
+            }
+
+            const trade = {
+                type,
+                entryPrice,
+                exitPrice,
+                profit,
+                timestamp: new Date().toISOString()
+            };
+
+            appState.trades.push(trade);
+            appState.balance += profit;
+
+            // Show notification
+            const message = `Trade Executed: ${type} ${profit >= 0 ? 'WIN' : 'LOSS'} ${profit >= 0 ? '+' : ''}$${profit.toFixed(2)}`;
+            showNotification(message, profit >= 0 ? 'success' : 'error');
+
+            // Update UI
+            updateDashboard();
+            updateTradeHistory();
+
+            // Update status to show trade
+            document.getElementById('statusText').textContent = 'Trade Executed';
+            document.getElementById('statusDetails').textContent = 
+                `${type} position closed at $${exitPrice.toFixed(2)}. ${profit >= 0 ? 'Profit' : 'Loss'}: $${Math.abs(profit).toFixed(2)}`;
+            document.getElementById('statusIndicator').className = 
+                `status-indicator ${profit >= 0 ? '' : 'waiting'}`;
+        }
+
+        function updateTradingStatus() {
+            const statuses = [
+                {
+                    text: 'Analyzing Market',
+                    details: 'Profit AI algorithm is actively monitoring market conditions for optimal entry points.',
+                    indicator: ''
+                },
+                {
+                    text: 'Signal Detection',
+                    details: 'Advanced pattern recognition algorithms are scanning for high-probability setups.',
+                    indicator: ''
+                },
+                {
+                    text: 'Waiting for Entry',
+                    details: 'Conditions are aligning. Preparing to execute trade when all criteria are met.',
+                    indicator: 'waiting'
+                }
+            ];
+
+            const status = statuses[Math.floor(Math.random() * statuses.length)];
+            document.getElementById('statusText').textContent = status.text;
+            document.getElementById('statusDetails').textContent = status.details;
+            document.getElementById('statusIndicator').className = `status-indicator ${status.indicator}`;
+        }
+
+        // ROI Calculator
+        function calculateROI() {
+            const startBalance = parseFloat(document.getElementById('roiStartBalance').value);
+            const winRate = parseFloat(document.getElementById('roiWinRate').value) / 100;
+            const avgProfit = parseFloat(document.getElementById('roiAvgProfit').value) / 100;
+            const tradesPerDay = parseInt(document.getElementById('roiTradesPerDay').value);
+            const days = parseInt(document.getElementById('roiDays').value);
+
+            const totalTrades = tradesPerDay * days;
+            const winningTrades = Math.floor(totalTrades * winRate);
+            const losingTrades = totalTrades - winningTrades;
+
+            // Simple calculation (compound growth)
+            let balance = startBalance;
+            for (let i = 0; i < winningTrades; i++) {
+                balance += balance * avgProfit;
+            }
+            for (let i = 0; i < losingTrades; i++) {
+                balance -= balance * (avgProfit / 2); // Assume losses are half of avg profit
+            }
+
+            const totalProfit = balance - startBalance;
+            const roiPercent = ((totalProfit / startBalance) * 100).toFixed(2);
+
+            document.getElementById('roiEndBalance').textContent = `$${balance.toFixed(2)}`;
+            document.getElementById('roiTotalProfit').textContent = `$${totalProfit.toFixed(2)}`;
+            document.getElementById('roiPercentage').textContent = `${roiPercent}%`;
+            document.getElementById('roiResults').style.display = 'block';
+        }
+
+        // Initialize
+        updateDashboard();
+        updateTradeHistory();
+    </script>
+</body>
+</html>

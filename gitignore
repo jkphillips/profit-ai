@@ -1,0 +1,56 @@
+# Profit AI - Git Ignore File
+# This prevents sensitive files from being uploaded to GitHub
+
+# Environment Variables (CRITICAL - Contains API Keys!)
+.env
+.env.local
+.env.production
+
+# Node Modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs/
+*.log
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# IDE Files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
+
+# Build Files
+dist/
+build/
+
+# PM2 Files
+.pm2/
+
+# Database Files (if you add database later)
+*.db
+*.sqlite
+
+# Backup Files
+*.bak
+*.backup
+
+# API Keys or Secrets (extra protection)
+*secret*
+*apikey*
+*credentials*
+
+# User Data
+user-data/
+uploads/
