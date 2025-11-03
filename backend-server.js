@@ -487,6 +487,10 @@ app.post('/api/stop', (req, res) => {
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', uptime: process.uptime(), exchange: 'Aster Dex', symbol: CONFIG.SYMBOL });
 });
+// Serve the web interface  ← Start typing here on line 490
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
+});
 
 // ============================================
 // START
